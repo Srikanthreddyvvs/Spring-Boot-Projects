@@ -53,10 +53,13 @@ public class AssignmentService {
     public void sendReminders() {
         List<Assignment> assignments = assignmentRepository.findAll();
         LocalDate tomorrow = LocalDate.now().plusDays(1);
-        assignments.stream()
-                .filter(a -> a.getDeadline() != null && a.getDeadline().equals(tomorrow) && a.getStudentEmail() != null)
-                .forEach(this::sendEmailReminder);
+        for (Assignment a : assignments) {
+            if (a.getDeadline() != null && a.getDeadline().equals(tomorrow) && a.getStudentEmail() != null) {
+                sendEmailReminder(a);
+            }
+        }
     }
+
     private void sendEmailReminder(Assignment assignment) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
